@@ -1,0 +1,27 @@
+name: Release App
+
+on:
+  push:
+    tags:
+      - 'v*' # 当你推送以 v 开头的标签时触发 (如 v2.4.5)
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+          
+      - name: Build with Gradle
+        run: ./gradlew jar
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/libs/*.jar # 自动上传生成的 JAR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
