@@ -1,8 +1,8 @@
 plugins {
     id("buildsrc.convention.kotlin-jvm")
-    alias(libs.plugins.compose)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.compose.hotReload)
+    //alias(libs.plugins.compose)
+    //alias(libs.plugins.compose.compiler)
+    //alias(libs.plugins.compose.hotReload)
 }
 
 repositories {
@@ -14,10 +14,10 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    testImplementation(project(":grunt-testcase"))
+    //testImplementation(project(":grunt-testcase"))
 
     projectLib(project(":grunt-bootstrap"))
-    //projectLib(project(":grunt-ir"))
+    //projectLib(project(":grunt-asm"))
     projectLib("net.spartanb312:genesis-kotlin:1.0")
 
     // libraries

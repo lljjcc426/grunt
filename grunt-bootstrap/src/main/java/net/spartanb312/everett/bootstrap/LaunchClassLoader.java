@@ -11,7 +11,7 @@ public class LaunchClassLoader extends ExternalClassLoader {
     public final static LaunchClassLoader INSTANCE = new LaunchClassLoader(launchCTM);
 
     public LaunchClassLoader(ClassTransformerManager ctm) {
-        super(new URL[0], Main.class.getClassLoader(), ctm);
+        super("LaunchClassLoader", new URL[0], Main.class.getClassLoader(), ctm);
     }
 
     public static void loadJarFile(String file) {

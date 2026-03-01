@@ -10,28 +10,28 @@ import kotlin.collections.toList
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-open class Configurable(var name: String) {
+interface Configurable {
 
-    private val values = mutableListOf<AbstractValue<*>>()
+    val vals: MutableList<AbstractValue<*>>
 
-    fun getValues() = values.toList()
+    fun getValues() = vals.toList()
 
     fun saveValue(): JsonObject {
         return JsonObject().apply {
-            values.forEach { it.saveValue(this) }
+            vals.forEach { it.saveValue(this) }
         }
     }
 
     fun getValue(jsonObject: JsonObject) {
-        values.forEach { it.getValue(jsonObject) }
+        vals.forEach { it.getValue(jsonObject) }
     }
 
     fun <T> value0(value: AbstractValue<T>): AbstractValue<T> {
-        values.add(value)
+        vals.add(value)
         return value
     }
 
-    fun resetAll() = values.forEach { it.reset() }
+    fun resetAll() = vals.forEach { it.reset() }
 
 }
 

@@ -1,14 +1,10 @@
 rootProject.name = "Grunteon"
 
-
 // Launch bootstrap
 include(":grunt-bootstrap")
 
 // Components
-include(":grunt-asm")
 include(":grunt-main")
-include(":grunt-testcase")
-//include(":grunt-ir")
 
 pluginManagement {
     repositories {
