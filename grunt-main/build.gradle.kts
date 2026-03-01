@@ -11,7 +11,7 @@ repositories {
     google()
     maven("https://jitpack.io/")
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    maven("https://raw.githubusercontent.com/spartanb312/maven-repo/main/")
+    maven("https://maven.noblesix.net/")
 }
 
 dependencies {
@@ -31,7 +31,7 @@ tasks {
         exclude("META-INF/versions/**", "module-info.class", "**/**.RSA")
         manifest {
             attributes(
-                "Main-Class" to "net.spartanb312.grunteon.bootstrap.Main"
+                "Main-Class" to "net.spartanb312.everett.bootstrap.Main"
             )
         }
         dependsOn(":grunt-bootstrap:jar")

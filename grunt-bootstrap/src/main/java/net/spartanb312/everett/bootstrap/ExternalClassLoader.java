@@ -1,7 +1,5 @@
 package net.spartanb312.everett.bootstrap;
 
-import net.spartanb312.everett.bootstrap.transform.ClassTransformerManager;
-
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -21,35 +19,23 @@ public class ExternalClassLoader extends URLClassLoader {
     public static final ConcurrentHashMap<String, List<URL>> resources = new ConcurrentHashMap<>();
     public String name;
 
-    public ExternalClassLoader(String name, URL[] urls, ClassLoader parent, ClassTransformerManager ctm) {
-        super(urls, parent);
-        loaderPool.add(this);
-        this.ctm = ctm;
-        this.name = name;
-    }
-
     public ExternalClassLoader(String name, URL[] urls, ClassLoader parent) {
         super(urls, parent);
         loaderPool.add(this);
-        ctm = null;
         this.name = name;
     }
 
     public ExternalClassLoader(String name, ClassLoader parent) {
         super(new URL[0], parent);
         loaderPool.add(this);
-        ctm = null;
         this.name = name;
     }
 
     public ExternalClassLoader(String name) {
         super(new URL[0], ExternalClassLoader.class.getClassLoader());
         loaderPool.add(this);
-        ctm = null;
         this.name = name;
     }
-
-    private final ClassTransformerManager ctm;
 
     private final HashMap<String, URL> classesCache = new HashMap<>();
     private final HashMap<String, URL> resourceCache = new HashMap<>();
@@ -120,12 +106,12 @@ public class ExternalClassLoader extends URLClassLoader {
             try {
                 bytes = readBytes(url.openStream());
             } catch (IOException ignored) {
-                LaunchLogger.error("Failed to load class from URL. Class: " + name);
+                System.out.println("Failed to load class from URL. Class: " + name);
             }
             if (bytes != null) {
                 // FastBootService.regClass(name, url.toString());
                 return defineClass(name, bytes, 0, bytes.length);
-            } else LaunchLogger.error("URL is empty! Class: " + name);
+            } else System.out.println("URL is empty! Class: " + name);
         }
         return null;
     }

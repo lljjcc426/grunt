@@ -1,17 +1,14 @@
 package net.spartanb312.everett.bootstrap;
 
-import net.spartanb312.everett.bootstrap.transform.ClassTransformerManager;
-
 import java.io.File;
 import java.net.URL;
 
 public class LaunchClassLoader extends ExternalClassLoader {
 
-    public final static ClassTransformerManager launchCTM = new ClassTransformerManager();
-    public final static LaunchClassLoader INSTANCE = new LaunchClassLoader(launchCTM);
+    public final static LaunchClassLoader INSTANCE = new LaunchClassLoader();
 
-    public LaunchClassLoader(ClassTransformerManager ctm) {
-        super("LaunchClassLoader", new URL[0], Main.class.getClassLoader(), ctm);
+    public LaunchClassLoader() {
+        super("LaunchClassLoader", new URL[0], Main.class.getClassLoader());
     }
 
     public static void loadJarFile(String file) {
