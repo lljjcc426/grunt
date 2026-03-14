@@ -1,39 +1,96 @@
+import org.jetbrains.kotlin.gradle.utils.extendsFrom
+
 plugins {
-    id("buildsrc.convention.kotlin-jvm")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
-    //alias(libs.plugins.compose)
-    //alias(libs.plugins.compose.compiler)
-    //alias(libs.plugins.compose.hotReload)
+    java
+    kotlin("jvm")
 }
 
 repositories {
     mavenCentral()
-    google()
-    maven("https://jitpack.io/")
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    maven("https://maven.noblesix.net/")
+    maven("https://repo1.maven.org/maven2/")
+    maven("https://mvnrepository.com/artifact/")
+}
+
+val kotlinxCoroutineVersion = "1.7.3"
+val asmVersion = "9.7"
+val ktorVersion = "2.3.7"
+
+val library: Configuration by configurations.creating
+
+configurations {
+    api.extendsFrom(named("library"))
 }
 
 dependencies {
-    projectLib(project(":grunt-bootstrap"))
-    projectLib("net.spartanb312:genesis-kotlin:1.0.0")
+    library(project(":genesis"))
+    //Kotlin
+    library(kotlin("stdlib"))
+    library("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutineVersion")
 
-    // libraries
-    library(libs.bundles.asm)
-    library(libs.bundles.utils)
+    //ASM
+    library("org.ow2.asm:asm:$asmVersion")
+    library("org.ow2.asm:asm-tree:$asmVersion")
+    library("org.ow2.asm:asm-commons:$asmVersion")
+    library("org.ow2.asm:asm-analysis:$asmVersion")
+
+    //GSON
+    library("com.google.code.gson:gson:2.10")
+
+    //GUI
+    library("com.miglayout:miglayout-swing:5.3")
+    library("com.github.weisj:darklaf-core:3.0.2")
+
+    library("org.apache.commons:commons-lang3:3.0")
+    library("javassist:javassist:3.12.1.GA")
+
+    //Ktor Web Server
+    library("io.ktor:ktor-server-core:$ktorVersion")
+    library("io.ktor:ktor-server-netty:$ktorVersion")
+    library("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+    library("io.ktor:ktor-serialization-gson:$ktorVersion")
+    library("io.ktor:ktor-server-cors:$ktorVersion")
+    library("io.ktor:ktor-server-websockets:$ktorVersion")
+    library("io.ktor:ktor-server-html-builder:$ktorVersion")
+
+    //CFR Decompiler
+    library("org.benf:cfr:0.152")
+
+//    api(library)
+
 }
 
 tasks {
+
+    compileJava {
+        options.encoding = "UTF-8"
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
+    }
+
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+
     jar {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        from(configurations["projectLib"].map { if (it.isDirectory) it else zipTree(it) })
-        from(configurations["library"].map { if (it.isDirectory) it else zipTree(it) })
-        exclude("META-INF/versions/**", "module-info.class", "**/**.RSA")
+        archiveBaseName.set(project.name.lowercase())
+
         manifest {
             attributes(
-                "Main-Class" to "net.spartanb312.everett.bootstrap.Main"
+                "Main-Class" to "net.spartanb312.grunt.GruntKt"
             )
         }
-        dependsOn(":grunt-bootstrap:jar")
+
+        from(
+            library.map {
+                if (it.isDirectory) it
+                else zipTree(it)
+            }
+        )
+
+        exclude("META-INF/versions/**", "module-info.class", "**/**.RSA")
     }
+
 }
