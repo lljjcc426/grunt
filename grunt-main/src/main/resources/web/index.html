@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gruntpocalypse - JVM Obfuscator</title>
+    <link rel="stylesheet" href="/css/fonts.css">
+    <link rel="stylesheet" href="/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/css/regular.min.css">
+    <link rel="stylesheet" href="/css/solid.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <div class="logo">
+                <span class="logo-icon">&#9881;</span>
+                <span class="logo-text">Gruntpocalypse</span>
+                <div class="logo-badges">
+                    <span class="version">v2.4.5</span>
+                    <span class="pro-badge" aria-label="Pro license">
+                        <span class="pro-text">PRO</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-center">
+            <label class="btn btn-primary" id="btn-upload">
+                <input type="file" id="file-input" accept=".jar" style="display:none">
+                <i class="ui-icon fas fa-upload" data-icon-dark="fas fa-upload" data-icon-light="fas fa-upload" aria-hidden="true"></i>
+                <span>Upload JAR</span>
+            </label>
+            <button class="btn btn-success" id="btn-obfuscate" disabled>
+                <i class="ui-icon fas fa-play-circle" data-icon-dark="fas fa-play-circle" data-icon-light="fas fa-play-circle" aria-hidden="true"></i>
+                <span>Obfuscate</span>
+            </button>
+            <button class="btn btn-info" id="btn-download" disabled>
+                <i class="ui-icon fas fa-download" data-icon-dark="fas fa-download" data-icon-light="fas fa-download" aria-hidden="true"></i>
+                <span>Download</span>
+            </button>
+        </div>
+        <div class="toolbar-right">
+            <button class="btn-small btn-theme-toggle" id="btn-theme-toggle" title="Switch Theme">
+                <i class="ui-icon fas fa-moon" id="theme-icon" aria-hidden="true"></i>
+                <span id="theme-text">Dark</span>
+            </button>
+            <span class="status-indicator" id="status-indicator">
+                <span class="status-dot idle"></span>
+                <span id="status-text">Idle</span>
+            </span>
+        </div>
+    </div>
+
+    <div class="progress-bar-container" id="progress-container" style="display:none">
+        <div class="progress-bar" id="progress-bar"></div>
+        <span class="progress-text" id="progress-text">0%</span>
+    </div>
+
+    <div class="workspace-nav" id="workspace-nav">
+        <button class="workspace-nav-btn active" data-pane="config">Configuration</button>
+        <button class="workspace-nav-btn" data-pane="project">Project</button>
+        <button class="workspace-nav-btn" data-pane="console">Console</button>
+    </div>
+
+    <main class="workspace" id="workspace">
+        <section class="panel panel-config workspace-pane" id="panel-config" data-pane="config">
+            <div class="panel-header">
+                <span>&#9881; Configuration</span>
+                <div class="config-actions">
+                    <button class="btn-small" id="btn-save-config" title="Save Config">
+                        <i class="ui-icon fas fa-save" data-icon-dark="fas fa-save" data-icon-light="fas fa-save" aria-hidden="true"></i>
+                    </button>
+                    <button class="btn-small" id="btn-load-config" title="Load Config">
+                        <i class="ui-icon fas fa-file-upload" data-icon-dark="fas fa-file-upload" data-icon-light="fas fa-file-upload" aria-hidden="true"></i>
+                    </button>
+                    <button class="btn-small" id="btn-reset-config" title="Reset">
+                        <i class="ui-icon fas fa-undo" data-icon-dark="fas fa-undo" data-icon-light="fas fa-undo" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="panel-body" id="config-panel">
+                <div class="config-section">
+                    <div class="config-section-header" data-toggle="settings-content">
+                        &#9660; Settings
+                    </div>
+                    <div class="config-section-body" id="settings-content">
+                        <div class="config-item">
+                            <label>Output File</label>
+                            <input type="text" id="cfg-output" value="output.jar" class="config-input">
+                        </div>
+                        <div class="config-item">
+                            <label>
+                                <input type="checkbox" id="cfg-parallel"> Multithreading
+                            </label>
+                        </div>
+                        <div class="config-item">
+                            <label>
+                                <input type="checkbox" id="cfg-remap" checked> Dump Mappings
+                            </label>
+                        </div>
+                        <div class="config-item">
+                            <label>
+                                <input type="checkbox" id="cfg-corrupt"> Corrupt Output
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <div class="config-section-header" data-toggle="transformers-content">
+                        &#9660; Transformers
+                    </div>
+                    <div class="config-section-body" id="transformers-content">
+                        <div class="loading">Loading transformers...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="splitter splitter-vertical" id="splitter-vertical" title="Resize panels"></div>
+
+        <section class="panel panel-project workspace-pane" id="panel-project" data-pane="project">
+            <div class="panel-header">
+                <span><i class="ui-icon far fa-folder-open" data-icon-dark="far fa-folder-open" data-icon-light="fas fa-folder-open" aria-hidden="true"></i>Project</span>
+                <div class="project-actions">
+                    <div class="scope-switch" id="scope-switch">
+                        <button class="scope-btn active" data-scope="input" id="btn-scope-input">Input</button>
+                        <button class="scope-btn" data-scope="output" id="btn-scope-output">Output</button>
+                    </div>
+                    <span class="project-meta" id="project-meta">Input: No data</span>
+                </div>
+            </div>
+            <div class="panel-body project-body">
+                <div class="project-tree-wrap">
+                    <div class="sub-header">File Tree</div>
+                    <div class="project-tree" id="project-tree">
+                        <div class="empty-state">Upload a JAR to inspect classes</div>
+                    </div>
+                </div>
+                <div class="project-editor-wrap">
+                    <div class="editor-tabs" id="editor-tabs"></div>
+                    <div class="code-viewer" id="code-viewer">
+                        <div class="empty-state">Select a class in the file tree</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="splitter splitter-horizontal" id="splitter-horizontal" title="Resize panels"></div>
+
+        <section class="panel panel-console workspace-pane" id="panel-console" data-pane="console">
+            <div class="panel-header">
+                <span><i class="ui-icon far fa-window-maximize" data-icon-dark="far fa-window-maximize" data-icon-light="fas fa-window-maximize" aria-hidden="true"></i>Console</span>
+                <div class="console-actions">
+                    <button class="btn-small" id="btn-clear-console" title="Clear">
+                        <i class="ui-icon far fa-trash-can" data-icon-dark="far fa-trash-can" data-icon-light="fas fa-trash-can" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="panel-body console-body" id="console-output">
+                <div class="console-line info">Welcome to Gruntpocalypse Web UI</div>
+            </div>
+        </section>
+    </main>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/highlight.min.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>
