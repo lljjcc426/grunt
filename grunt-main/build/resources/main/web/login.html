@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gruntpocalypse - Sign In</title>
+    <link rel="stylesheet" href="/css/fonts.css">
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+    <main class="auth-page">
+        <section class="auth-card">
+            <aside class="auth-image-area" aria-hidden="true">
+                <img
+                    src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1400&q=80"
+                    alt="Laptop with Java code editor"
+                >
+                <div class="auth-image-overlay"></div>
+            </aside>
+
+            <section class="auth-form-area">
+                <header class="auth-header">
+                    <div>
+                        <h1>Gruntpocalypse</h1>
+                        <p>Secure access to your obfuscation workspace</p>
+                    </div>
+                </header>
+
+                <div class="auth-tabs" role="tablist" aria-label="Authentication mode">
+                    <button class="auth-tab active" type="button" data-tab-trigger="signin" role="tab" aria-selected="true">
+                        Sign In
+                    </button>
+                    <button class="auth-tab" type="button" data-tab-trigger="cdk" role="tab" aria-selected="false">
+                        Activate CDK
+                    </button>
+                </div>
+
+                <form class="auth-form active" data-tab-content="signin">
+                    <label for="username">USERNAME</label>
+                    <input id="username" type="text" placeholder="Username" autocomplete="username">
+
+                    <label for="password">PASSWORD</label>
+                    <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+
+                    <div class="auth-form-row">
+                        <label class="remember-me" for="remember">
+                            <input id="remember" type="checkbox">
+                            <span>Remember Me</span>
+                        </label>
+                        <a href="#" class="link-muted">Forgot Password</a>
+                    </div>
+
+                    <button class="auth-submit" type="submit">Sign In</button>
+                </form>
+
+                <form class="auth-form" data-tab-content="cdk">
+                    <label for="cdk">CDK SERIAL</label>
+                    <input id="cdk" type="text" placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="off">
+
+                    <p class="cdk-tip">Enter your purchased CDK to activate access and continue.</p>
+
+                    <button class="auth-submit" type="submit">Activate &amp; Login</button>
+                </form>
+
+                <footer class="auth-footer">
+                    Not a member? <a href="#">Sign Up</a>
+                </footer>
+            </section>
+        </section>
+    </main>
+    <script src="/js/login.js"></script>
+</body>
+</html>
